@@ -33,11 +33,11 @@ namespace PricingAndHedging.BrownianMotion
 
         private BrownianMotionPoint End { get; set; }
 
-        public double Evaluate(KnockOutPutOption knockOutPutOption, out BrownianMotionStats stats)
+        public double Evaluate(KnockOutPutOption knockOutPutOption, out BrownianMotionPathStats stats)
         {
             bool barrierHasBeenTouched = false;
             double payoff = 0.0;
-            stats = new BrownianMotionStats(0, false, payoff);
+            stats = new BrownianMotionPathStats(0, false, payoff);
 
             while (!this.MaximumDiscretizationHasBeenReached)
             {
@@ -62,14 +62,14 @@ namespace PricingAndHedging.BrownianMotion
                     double variance = (rightTime - newTime) * (newTime - leftTime) / (rightTime - leftTime);
                     double newRandomValue = mean + Math.Sqrt(variance) * Normal.Sample(0, 1);
 
-                    double newAssetValue = leftAssetValue * Math.Exp((knockOutPutOption.InterestRate - Math.Pow(knockOutPutOption.Volatility, 2.0) / 2.0) * (newTime - leftTime) + knockOutPutOption.Volatility * newRandomValue);
+                    double newAssetValue = leftAssetValue * Math.Exp((knockOutPutOption.InterestRate - Math.Pow(knockOutPutOption.Volatility, 2.0) / 2.0) * (newTime - leftTime) + knockOutPutOption.Volatility * (newRandomValue - leftRandomValue));
 
                     this.path.Add(newTime, new BrownianMotionPoint(newTime, newRandomValue, newAssetValue));
 
                     if (newAssetValue <= knockOutPutOption.LowBarrier)
                     {
                         barrierHasBeenTouched = true;
-                        stats = new BrownianMotionStats(this.path.Count - 2, true, payoff);
+                        stats = new BrownianMotionPathStats(this.path.Count - 2, true, payoff);
                         break;
                     }
                 }
@@ -78,7 +78,7 @@ namespace PricingAndHedging.BrownianMotion
             if (!barrierHasBeenTouched)
             {
                 payoff = Math.Max(knockOutPutOption.Strike - this.End.AssetValue, 0.0);
-                stats = new BrownianMotionStats(this.path.Count - 2, false, payoff);
+                stats = new BrownianMotionPathStats(this.path.Count - 2, false, payoff);
             }
 
             return payoff;

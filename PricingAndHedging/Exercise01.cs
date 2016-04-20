@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PricingAndHedging.Statistics;
+using PricingAndHedging.Options;
+using MathNet.Numerics.Distributions;
+using PricingAndHedging.BrownianMotion;
+using System.Diagnostics;
 
 namespace PricingAndHedging.Exercises
 {
@@ -12,45 +16,66 @@ namespace PricingAndHedging.Exercises
 
         private int pathsCount;
         private int maximumDiscretizationLevel;
-        private double putOptionPremium;
+        private KnockOutPutOption koPutOption;
+        private TimeSpan calculationTime;
 
         #endregion
 
         #region Constructor
 
-        public Exercise01(int pathsCount, int maximumDiscretizationLevel, double putOptionPremium)
+        public Exercise01(int pathsCount, int maximumDiscretizationLevel, KnockOutPutOption koPutOption)
         {
             this.pathsCount = pathsCount;
             this.maximumDiscretizationLevel = maximumDiscretizationLevel;
-            this.putOptionPremium = putOptionPremium;
+            this.koPutOption = koPutOption;
         }
 
         #endregion
 
-        private List<BrownianMotionStats> statistics = null;
-        private List<BrownianMotionStats> Statistics
+        private List<BrownianMotionPathStats> statistics = null;
+        private List<BrownianMotionPathStats> Statistics
         {
             get
             {
                 if (this.statistics == null)
-                    this.statistics = new List<BrownianMotionStats>();
+                    this.statistics = new List<BrownianMotionPathStats>();
 
                 return this.statistics;
             }
         }
 
-        public void AddStats(BrownianMotionStats stats)
+        private void Evaluate()
         {
-            this.Statistics.Add(stats);
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            for (int i = 0; i < this.pathsCount; i++)
+            {
+                double randomValue = Math.Sqrt(this.koPutOption.TimeToMaturity) * Normal.Sample(0.0, 1.0);
+
+                double maturityValue = this.koPutOption.Spot * Math.Exp((this.koPutOption.InterestRate - Math.Pow(this.koPutOption.Volatility, 2.0) / 2.0) * this.koPutOption.TimeToMaturity + this.koPutOption.Volatility * randomValue);
+
+                var brownianBridge = new BrownianBridge(new BrownianMotionPoint(0.0, 0.0, this.koPutOption.Spot), new BrownianMotionPoint(this.koPutOption.TimeToMaturity, randomValue, maturityValue), maximumDiscretizationLevel);
+
+                BrownianMotionPathStats stats;
+
+                this.koPutOption.Evaluate(brownianBridge, out stats);
+
+                this.Statistics.Add(stats);
+            }
+
+            this.calculationTime = stopwatch.Elapsed;
         }
 
-        public void ShowResults()
+        public string GetResults()
         {
+            this.Evaluate();
+
             int calculatedPointsCount = 0;
             int barrierTouchesCount = 0;
             double sumOfKnockOutPayoffs = 0.0;
 
-            foreach (BrownianMotionStats stats in this.Statistics)
+            foreach (BrownianMotionPathStats stats in this.Statistics)
             {
                 calculatedPointsCount += stats.CalculatedPointsCount;
 
@@ -60,12 +85,19 @@ namespace PricingAndHedging.Exercises
             }
 
             double knockOutPutPremium = sumOfKnockOutPayoffs / this.pathsCount;
-            double knockInPutPremium = putOptionPremium - knockOutPutPremium;
+            double knockInPutPremium = koPutOption.PutTheoreticalPremium - knockOutPutPremium;
+            double touchedPathsInPercentage = (barrierTouchesCount * 100.0 / this.pathsCount);
 
-            Console.WriteLine("Knock Out Put Premium:\t" + knockOutPutPremium.ToString("0.00"));
-            Console.WriteLine("Knock In Put Premium:\t" + knockInPutPremium.ToString("0.00"));
-            Console.WriteLine("Percentage of paths that hit the barrier (%):\t" + (barrierTouchesCount * 100.0 / this.pathsCount).ToString("0.00"));
-            Console.WriteLine("Number of calculated points:\t" + calculatedPointsCount);
+            var result = new StringBuilder();
+            result.Append(this.pathsCount).Append(",");
+            result.Append(this.maximumDiscretizationLevel).Append(",");
+            result.Append(knockOutPutPremium).Append(",");
+            result.Append(knockInPutPremium).Append(",");
+            result.Append(touchedPathsInPercentage).Append(",");
+            result.Append(calculatedPointsCount).Append(",");
+            result.Append(this.calculationTime.TotalSeconds);
+
+            return result.ToString();
         }
     }
 }

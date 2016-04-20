@@ -39,7 +39,7 @@ namespace PricingAndHedging.Options
 
         #endregion
 
-        public double Evaluate(BrownianBridge brownianBridge, out BrownianMotionStats stats)
+        public double Evaluate(BrownianBridge brownianBridge, out BrownianMotionPathStats stats)
         {
             return brownianBridge.Evaluate(this, out stats);
         }

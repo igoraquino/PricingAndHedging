@@ -25,29 +25,23 @@ namespace PricingAndHedging
             var volatility = 0.2;
             var spot = 100.0;
             var timeToMaturity = 128.0 / 256.0;
-            var pathsCount = 50000;
-            var maximumDiscretizationLevel = 8;
+
+            var pathsCountRange = new[] { 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000 };
+            var maximumDiscretizationLevelRange = new[] { 6, 7, 8, 9, 10, 11, 12 };
 
             var koPutOption = new KnockOutPutOption(spot, strike, highBarrier, lowBarrier, interestRate, dividendYield, volatility, timeToMaturity);
+                        
+            var header = "Paths Count,Max Discretization Level,KO Put Premium,KI Put Premium,Touched Paths in Percentage,Calculated Points Count,Calculation Time (s)";
+            Console.WriteLine(header);
 
-            var exercise = new Exercise01(pathsCount, maximumDiscretizationLevel, koPutOption.PutTheoreticalPremium);
-
-            for (int i = 0; i < pathsCount; i++)
+            foreach (int pathsCount in pathsCountRange)
             {
-                double randomValue = Math.Sqrt(timeToMaturity) * Normal.Sample(0.0, 1.0);
-
-                double maturityValue = spot * Math.Exp((interestRate - Math.Pow(volatility, 2.0) / 2.0) * timeToMaturity + volatility * randomValue);
-
-                var brownianBridge = new BrownianBridge(new BrownianMotionPoint(0.0, 0.0, spot), new BrownianMotionPoint(timeToMaturity, randomValue, maturityValue), maximumDiscretizationLevel);
-
-                BrownianMotionStats stats;
-
-                koPutOption.Evaluate(brownianBridge, out stats);
-
-                exercise.AddStats(stats);
+                foreach (int maximumDiscretizationLevel in maximumDiscretizationLevelRange)
+                {
+                    var exercise = new Exercise01(pathsCount, maximumDiscretizationLevel, koPutOption);
+                    Console.WriteLine(exercise.GetResults());
+                }
             }
-
-            exercise.ShowResults();
         }
     }
 }
