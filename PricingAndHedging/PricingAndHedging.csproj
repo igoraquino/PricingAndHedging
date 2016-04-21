@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrownianBridge.cs" />
+    <Compile Include="BrownianMotion.cs" />
     <Compile Include="BrownianMotionPoint.cs" />
     <Compile Include="BrownianMotionStats.cs" />
     <Compile Include="Exercise01.cs" />
