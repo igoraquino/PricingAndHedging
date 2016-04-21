@@ -89,6 +89,7 @@ namespace PricingAndHedging.Exercises
             double touchedPathsInPercentage = (barrierTouchesCount * 100.0 / this.pathsCount);
 
             var result = new StringBuilder();
+            result.Append("Brownian Bridge").Append(",");
             result.Append(this.pathsCount).Append(",");
             result.Append(this.maximumDiscretizationLevel).Append(",");
             result.Append(knockOutPutPremium).Append(",");

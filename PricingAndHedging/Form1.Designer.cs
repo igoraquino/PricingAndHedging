@@ -28,25 +28,49 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.brownianBridge = new System.Windows.Forms.Button();
+            this.brownianMotion = new System.Windows.Forms.Button();
+            this.parallelRun = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // button1
+            // brownianBridge
             // 
-            this.button1.Location = new System.Drawing.Point(135, 96);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.brownianBridge.Location = new System.Drawing.Point(12, 12);
+            this.brownianBridge.Name = "brownianBridge";
+            this.brownianBridge.Size = new System.Drawing.Size(75, 40);
+            this.brownianBridge.TabIndex = 0;
+            this.brownianBridge.Text = "Brownian Bridge";
+            this.brownianBridge.UseVisualStyleBackColor = true;
+            this.brownianBridge.Click += new System.EventHandler(this.brownianBridge_Click);
+            // 
+            // brownianMotion
+            // 
+            this.brownianMotion.Location = new System.Drawing.Point(197, 13);
+            this.brownianMotion.Name = "brownianMotion";
+            this.brownianMotion.Size = new System.Drawing.Size(75, 40);
+            this.brownianMotion.TabIndex = 1;
+            this.brownianMotion.Text = "Brownian Motion";
+            this.brownianMotion.UseVisualStyleBackColor = true;
+            this.brownianMotion.Click += new System.EventHandler(this.brownianMotion_Click);
+            // 
+            // parallelRun
+            // 
+            this.parallelRun.Location = new System.Drawing.Point(101, 64);
+            this.parallelRun.Name = "parallelRun";
+            this.parallelRun.Size = new System.Drawing.Size(75, 23);
+            this.parallelRun.TabIndex = 2;
+            this.parallelRun.Text = "Parallel";
+            this.parallelRun.UseVisualStyleBackColor = true;
+            this.parallelRun.Click += new System.EventHandler(this.parallelRun_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.parallelRun);
+            this.Controls.Add(this.brownianMotion);
+            this.Controls.Add(this.brownianBridge);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -55,7 +79,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button brownianBridge;
+        private System.Windows.Forms.Button brownianMotion;
+        private System.Windows.Forms.Button parallelRun;
     }
 }
 
