@@ -5,9 +5,9 @@ using System.Text;
 
 namespace PricingAndHedging.Statistics
 {
-    public class BrownianMotionPathStats
+    public class Exercise01Stats
     {
-        public BrownianMotionPathStats(int calculatedPointsCount, bool barrierHasTouched, double payoff)
+        public Exercise01Stats(int calculatedPointsCount, bool barrierHasTouched, double payoff)
         {
             this.CalculatedPointsCount = calculatedPointsCount;
             this.BarrierHasTouched = barrierHasTouched;

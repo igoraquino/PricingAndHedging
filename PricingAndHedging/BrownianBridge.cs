@@ -33,11 +33,11 @@ namespace PricingAndHedging.BrownianMotion
 
         private BrownianMotionPoint End { get; set; }
 
-        public double Evaluate(KnockOutPutOption knockOutPutOption, out BrownianMotionPathStats stats)
+        public double Evaluate(KnockOutPutOption knockOutPutOption, out Exercise01Stats stats)
         {
             bool barrierHasBeenTouched = false;
             double payoff = 0.0;
-            stats = new BrownianMotionPathStats(0, false, payoff);
+            stats = new Exercise01Stats(0, false, payoff);
 
             while (!this.MaximumDiscretizationHasBeenReached)
             {
@@ -69,7 +69,7 @@ namespace PricingAndHedging.BrownianMotion
                     if (newAssetValue <= knockOutPutOption.LowBarrier)
                     {
                         barrierHasBeenTouched = true;
-                        stats = new BrownianMotionPathStats(this.path.Count - 2, true, payoff);
+                        stats = new Exercise01Stats(this.path.Count - 2, true, payoff);
                         break;
                     }
                 }
@@ -78,7 +78,7 @@ namespace PricingAndHedging.BrownianMotion
             if (!barrierHasBeenTouched)
             {
                 payoff = Math.Max(knockOutPutOption.Strike - this.End.AssetValue, 0.0);
-                stats = new BrownianMotionPathStats(this.path.Count - 2, false, payoff);
+                stats = new Exercise01Stats(this.path.Count - 2, false, payoff);
             }
 
             return payoff;

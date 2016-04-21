@@ -32,13 +32,13 @@ namespace PricingAndHedging.Exercises
 
         #endregion
 
-        private List<BrownianMotionPathStats> statistics = null;
-        private List<BrownianMotionPathStats> Statistics
+        private List<Exercise01Stats> statistics = null;
+        private List<Exercise01Stats> Statistics
         {
             get
             {
                 if (this.statistics == null)
-                    this.statistics = new List<BrownianMotionPathStats>();
+                    this.statistics = new List<Exercise01Stats>();
 
                 return this.statistics;
             }
@@ -57,7 +57,7 @@ namespace PricingAndHedging.Exercises
 
                 var brownianBridge = new BrownianBridge(new BrownianMotionPoint(0.0, 0.0, this.koPutOption.Spot), new BrownianMotionPoint(this.koPutOption.TimeToMaturity, randomValue, maturityValue), maximumDiscretizationLevel);
 
-                BrownianMotionPathStats stats;
+                Exercise01Stats stats;
 
                 this.koPutOption.Evaluate(brownianBridge, out stats);
 
@@ -75,7 +75,7 @@ namespace PricingAndHedging.Exercises
             int barrierTouchesCount = 0;
             double sumOfKnockOutPayoffs = 0.0;
 
-            foreach (BrownianMotionPathStats stats in this.Statistics)
+            foreach (Exercise01Stats stats in this.Statistics)
             {
                 calculatedPointsCount += stats.CalculatedPointsCount;
 
