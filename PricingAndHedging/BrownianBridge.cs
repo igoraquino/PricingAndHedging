@@ -47,6 +47,8 @@ namespace PricingAndHedging.BrownianMotion
                 double[] previousPathTimes = new double[this.path.Keys.Count];
                 this.path.Keys.CopyTo(previousPathTimes, 0);
 
+                var normal = new Normal();
+
                 for (int leftIndex = 0; leftIndex < previousPathCount - 1; leftIndex++)
                 {
                     double leftTime = previousPathTimes[leftIndex];
@@ -60,7 +62,7 @@ namespace PricingAndHedging.BrownianMotion
 
                     double mean = ((rightTime - newTime) * leftRandomValue + (newTime - leftTime) * rightRandomValue) / (rightTime - leftTime);
                     double variance = (rightTime - newTime) * (newTime - leftTime) / (rightTime - leftTime);
-                    double newRandomValue = mean + Math.Sqrt(variance) * Normal.Sample(0, 1);
+                    double newRandomValue = mean + Math.Sqrt(variance) * normal.Sample();
 
                     double newAssetValue = leftAssetValue * Math.Exp((knockOutPutOption.InterestRate - Math.Pow(knockOutPutOption.Volatility, 2.0) / 2.0) * (newTime - leftTime) + knockOutPutOption.Volatility * (newRandomValue - leftRandomValue));
 
