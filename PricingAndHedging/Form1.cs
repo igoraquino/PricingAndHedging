@@ -6,6 +6,7 @@ using PricingAndHedging.Options;
 using PricingAndHedging.Statistics;
 using PricingAndHedging.Exercises;
 using System.Threading;
+using System.IO;
 
 namespace PricingAndHedging
 {
@@ -38,16 +39,24 @@ namespace PricingAndHedging
             var koPutOption = new KnockOutPutOption(spot, strike, highBarrier, lowBarrier, interestRate, dividendYield, volatility, timeToMaturity);
 
             var header = "Type,Paths Count,Max Discretization Level,KO Put Premium,KI Put Premium,Touched Paths in Percentage,Calculated Points Count,Calculation Time (s)";
-            Console.WriteLine(header);
+            
+            var fileName = @"%TEMP%\" + DateTime.Now.ToString("yyyyMMdd HHmmss") + "_BrownianBridge.csv";
+            fileName = Environment.ExpandEnvironmentVariables(fileName);
+            StreamWriter logFileStream = File.AppendText(fileName);
+            logFileStream.WriteLine(header);
+            logFileStream.Flush();
 
             foreach (int pathsCount in pathsCountRange)
             {
                 foreach (int maximumDiscretizationLevel in maximumDiscretizationLevelRange)
                 {
                     var exercise = new Exercise01(pathsCount, maximumDiscretizationLevel, koPutOption);
-                    Console.WriteLine(exercise.GetResults());
+                    logFileStream.WriteLine(exercise.GetResults());
+                    logFileStream.Flush();
                 }
             }
+
+            logFileStream.Close();
         }
 
         private void brownianMotion_Click(object sender, EventArgs e)
@@ -72,7 +81,12 @@ namespace PricingAndHedging
             var koPutOption = new KnockOutPutOption(spot, strike, highBarrier, lowBarrier, interestRate, dividendYield, volatility, timeToMaturity);
 
             var header = "Type,Paths Count,Max Discretization Level,KO Put Premium,KI Put Premium,Touched Paths in Percentage,Calculated Points Count,Calculation Time (s)";
-            Console.WriteLine(header);
+
+            var fileName = @"%TEMP%\" + DateTime.Now.ToString("yyyyMMdd HHmmss") + "_BrownianMotion.csv";
+            fileName = Environment.ExpandEnvironmentVariables(fileName);
+            StreamWriter logFileStream = File.AppendText(fileName);
+            logFileStream.WriteLine(header);
+            logFileStream.Flush();
 
             foreach (int pathsCount in pathsCountRange)
             {
@@ -80,9 +94,12 @@ namespace PricingAndHedging
                 {
                     int numberOfSteps = int.Parse(Math.Pow(2, maximumDiscretizationLevel).ToString());
                     var result = new BrownianMotion.BrownianMotion().Evaluate(pathsCount, numberOfSteps, koPutOption);
-                    Console.WriteLine(result);
+                    logFileStream.WriteLine(result);
+                    logFileStream.Flush();
                 }
             }
+
+            logFileStream.Close();
         }
 
         private void parallelRun_Click(object sender, EventArgs e)
