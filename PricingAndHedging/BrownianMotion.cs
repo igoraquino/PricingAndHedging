@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using MathNet.Numerics.Distributions;
-using PricingAndHedging.Options;
-using PricingAndHedging.Statistics;
+using PricingAndHedging.Exercise01.Options;
+using PricingAndHedging.Exercise01.Statistics;
 using System.Text;
 
-namespace PricingAndHedging.BrownianMotion
+namespace PricingAndHedging.Exercise01.BrownianMotion
 {
     public class BrownianMotion
     {

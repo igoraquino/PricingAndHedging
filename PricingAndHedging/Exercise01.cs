@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PricingAndHedging.Statistics;
-using PricingAndHedging.Options;
+using PricingAndHedging.Exercise01.Statistics;
+using PricingAndHedging.Exercise01.Options;
 using MathNet.Numerics.Distributions;
-using PricingAndHedging.BrownianMotion;
+using PricingAndHedging.Exercise01.BrownianMotion;
 using System.Diagnostics;
 
-namespace PricingAndHedging.Exercises
+namespace PricingAndHedging.Exercise01.Exercises
 {
     public class Exercise01
     {

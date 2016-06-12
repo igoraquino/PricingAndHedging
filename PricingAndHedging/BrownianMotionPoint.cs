@@ -1,4 +1,4 @@
-﻿namespace PricingAndHedging.BrownianMotion
+﻿namespace PricingAndHedging.Exercise01.BrownianMotion
 {
     public class BrownianMotionPoint
     {

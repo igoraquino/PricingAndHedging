@@ -1,4 +1,4 @@
-﻿namespace PricingAndHedging
+﻿namespace PricingAndHedging.Exercise01
 {
     partial class Form1
     {

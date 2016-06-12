@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PricingAndHedging.Statistics
+namespace PricingAndHedging.Exercise01.Statistics
 {
     public class Exercise01Stats
     {

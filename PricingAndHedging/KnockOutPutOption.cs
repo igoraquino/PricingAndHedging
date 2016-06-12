@@ -1,9 +1,9 @@
 ﻿using MathNet.Numerics.Distributions;
-using PricingAndHedging.BrownianMotion;
-using PricingAndHedging.Statistics;
+using PricingAndHedging.Exercise01.BrownianMotion;
+using PricingAndHedging.Exercise01.Statistics;
 using System;
 
-namespace PricingAndHedging.Options
+namespace PricingAndHedging.Exercise01.Options
 {
     public class KnockOutPutOption
     {
