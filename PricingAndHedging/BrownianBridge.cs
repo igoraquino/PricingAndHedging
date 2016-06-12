@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MathNet.Numerics.Distributions;
+﻿using MathNet.Numerics.Distributions;
+using PricingAndHedging.BrownianMotion;
 using PricingAndHedging.Exercise01.Options;
 using PricingAndHedging.Exercise01.Statistics;
+using System;
+using System.Collections.Generic;
 
 namespace PricingAndHedging.Exercise01.BrownianMotion
 {

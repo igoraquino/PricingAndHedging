@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PricingAndHedging.Exercise01.Statistics;
-using PricingAndHedging.Exercise01.Options;
-using MathNet.Numerics.Distributions;
+﻿using MathNet.Numerics.Distributions;
+using PricingAndHedging.BrownianMotion;
 using PricingAndHedging.Exercise01.BrownianMotion;
+using PricingAndHedging.Exercise01.Options;
+using PricingAndHedging.Exercise01.Statistics;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace PricingAndHedging.Exercise01.Exercises
 {
