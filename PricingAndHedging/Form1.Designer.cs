@@ -31,11 +31,12 @@
             this.brownianBridge = new System.Windows.Forms.Button();
             this.brownianMotion = new System.Windows.Forms.Button();
             this.parallelRun = new System.Windows.Forms.Button();
+            this.exercise02 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // brownianBridge
             // 
-            this.brownianBridge.Location = new System.Drawing.Point(12, 12);
+            this.brownianBridge.Location = new System.Drawing.Point(12, 209);
             this.brownianBridge.Name = "brownianBridge";
             this.brownianBridge.Size = new System.Drawing.Size(75, 40);
             this.brownianBridge.TabIndex = 0;
@@ -45,7 +46,7 @@
             // 
             // brownianMotion
             // 
-            this.brownianMotion.Location = new System.Drawing.Point(197, 13);
+            this.brownianMotion.Location = new System.Drawing.Point(197, 210);
             this.brownianMotion.Name = "brownianMotion";
             this.brownianMotion.Size = new System.Drawing.Size(75, 40);
             this.brownianMotion.TabIndex = 1;
@@ -55,7 +56,7 @@
             // 
             // parallelRun
             // 
-            this.parallelRun.Location = new System.Drawing.Point(101, 64);
+            this.parallelRun.Location = new System.Drawing.Point(108, 227);
             this.parallelRun.Name = "parallelRun";
             this.parallelRun.Size = new System.Drawing.Size(75, 23);
             this.parallelRun.TabIndex = 2;
@@ -63,11 +64,22 @@
             this.parallelRun.UseVisualStyleBackColor = true;
             this.parallelRun.Click += new System.EventHandler(this.parallelRun_Click);
             // 
+            // exercise02
+            // 
+            this.exercise02.Location = new System.Drawing.Point(93, 37);
+            this.exercise02.Name = "exercise02";
+            this.exercise02.Size = new System.Drawing.Size(75, 23);
+            this.exercise02.TabIndex = 3;
+            this.exercise02.Text = "exercise02";
+            this.exercise02.UseVisualStyleBackColor = true;
+            this.exercise02.Click += new System.EventHandler(this.exercise02_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.exercise02);
             this.Controls.Add(this.parallelRun);
             this.Controls.Add(this.brownianMotion);
             this.Controls.Add(this.brownianBridge);
@@ -82,6 +94,7 @@
         private System.Windows.Forms.Button brownianBridge;
         private System.Windows.Forms.Button brownianMotion;
         private System.Windows.Forms.Button parallelRun;
+        private System.Windows.Forms.Button exercise02;
     }
 }
 

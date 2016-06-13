@@ -7,6 +7,8 @@ using PricingAndHedging.Exercise01.Statistics;
 using PricingAndHedging.Exercise01.Exercises;
 using System.Threading;
 using System.IO;
+using PricingAndHedging.Exercise02.Exercises;
+using System.Text;
 
 namespace PricingAndHedging.Exercise01
 {
@@ -16,6 +18,8 @@ namespace PricingAndHedging.Exercise01
         {
             InitializeComponent();
         }
+
+        #region Exercise 01 - Brownian Bridge
 
         private void brownianBridge_Click(object sender, EventArgs e)
         {
@@ -110,5 +114,33 @@ namespace PricingAndHedging.Exercise01
             var brownianMotionTask = new Thread(this.RunBrownianMotion);
             brownianMotionTask.Start();
         }
+
+        #endregion
+
+        #region Exercise 02 - Delta Hedging
+
+        private void exercise02_Click(object sender, EventArgs e)
+        {
+            var pathsCountRange = new[] {20000, 20000, 30000, 30000, 40000, 40000, 50000, 50000, 60000, 60000, 70000, 70000};
+
+            StringBuilder text = new StringBuilder();
+            text.AppendLine("r = 0.0");                
+            for (int i = 0; i < pathsCountRange.Length; i++)
+            {
+                double premium = new PremiumTest().EvaluateCallOption(100.0, 100.0, 0.0, 0.2, 1, pathsCountRange[i], 5000);
+                text.AppendLine(pathsCountRange[i] + ": " + premium);
+            }
+
+            text.AppendLine("\n\nr = 2.0, T = 0.5");
+            for (int i = 0; i < pathsCountRange.Length; i++)
+            {
+                double premium = new PremiumTest().EvaluateCallOption(100.0, 100.0, 0.02, 0.2, 0.5, pathsCountRange[i], 5000);
+                text.AppendLine(pathsCountRange[i] + ": " + premium);
+            }
+
+            MessageBox.Show(text.ToString());
+        }
+
+        #endregion
     }
 }

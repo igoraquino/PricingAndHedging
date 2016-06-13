@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PricingAndHedging.Exercise01.Properties {
+namespace PricingAndHedging.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
