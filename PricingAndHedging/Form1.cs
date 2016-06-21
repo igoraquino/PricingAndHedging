@@ -9,6 +9,8 @@ using System.Threading;
 using System.IO;
 using PricingAndHedging.Exercise02.Exercises;
 using System.Text;
+using System.Diagnostics;
+using PricingAndHedging.Exercise02;
 
 namespace PricingAndHedging.Exercise01
 {
@@ -121,14 +123,24 @@ namespace PricingAndHedging.Exercise01
 
         private void exercise02_Click(object sender, EventArgs e)
         {
-            var pathsCountRange = new[] {20000, 20000, 30000, 30000, 40000, 40000, 50000, 50000, 60000, 60000, 70000, 70000};
+            var call = new EuropeanCallOption(100.0, 100.0, 1.0, 0.0, .20);
+            MessageBox.Show(call.Price + "\n" + call.Delta);
+        }
+
+        private void EvaluateCallViaMonteCarlo()
+        {
+            //var pathsCountRange = new[] {20000, 20000, 30000, 30000, 40000, 40000, 50000, 50000, 60000, 60000, 70000, 70000};
+            var pathsCountRange = new[] { 70000, 70000, 80000, 80000, 90000, 90000, 100000, 100000, 1000000, 10000000, 10000000, 20000000, 20000000, 30000000, 30000000, 50000000, 100000000 };
 
             StringBuilder text = new StringBuilder();
-            text.AppendLine("r = 0.0");                
+            text.AppendLine("r = 0.0");
+            var stopwatch = new Stopwatch();
             for (int i = 0; i < pathsCountRange.Length; i++)
             {
-                double premium = new PremiumTest().EvaluateCallOption(100.0, 100.0, 0.0, 0.2, 1, pathsCountRange[i], 5000);
+                stopwatch.Restart();
+                double premium = new PremiumTest().EvaluateCallOption(100.0, 100.0, 0.0, 0.2, 0.5, pathsCountRange[i], 1);
                 text.AppendLine(pathsCountRange[i] + ": " + premium);
+                Console.WriteLine(text.ToString() + "\t" + stopwatch.ElapsedMilliseconds / 1000.0 + "\n");
             }
 
             text.AppendLine("\n\nr = 2.0, T = 0.5");

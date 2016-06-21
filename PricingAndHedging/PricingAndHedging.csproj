@@ -55,6 +55,7 @@
     <Compile Include="BrownianMotionPoint.cs" />
     <Compile Include="BrownianMotionStats.cs" />
     <Compile Include="Exercise01.cs" />
+    <Compile Include="Exercise02\EuropeanCallOption.cs" />
     <Compile Include="Exercise02\Exercise02.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

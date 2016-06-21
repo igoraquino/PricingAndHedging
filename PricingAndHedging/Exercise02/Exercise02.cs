@@ -2,7 +2,7 @@
 
 namespace PricingAndHedging.Exercise02.Exercises
 {
-    public class PremiumTest
+    public class  PremiumTest
     {
         public double EvaluateCallOption(double initialAssetPrice, double strike, double interestRate, double volatility, double timeToMaturity, int numberOfPaths, int numberOfSteps)
         {
