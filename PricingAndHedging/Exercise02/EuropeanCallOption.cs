@@ -41,7 +41,7 @@ namespace PricingAndHedging.Exercise02
             {
                 if (double.IsNaN(this.d1))
                 {
-                    double numerator = (Math.Log(this.AssetValue / this.Strike) + (this.InterestRateInYears + Math.Pow(this.Volatility, 2.0) / 2.0) * this.TimeToMaturityInYears);
+                    double numerator = Math.Log(this.AssetValue / this.Strike) + ((this.InterestRateInYears) + (Math.Pow(this.Volatility, 2.0) / 2.0)) * (this.TimeToMaturityInYears);
                     double denominator = this.Volatility * Math.Sqrt(this.TimeToMaturityInYears);
                     this.d1 = (numerator / denominator);
                 }
