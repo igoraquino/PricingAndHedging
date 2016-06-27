@@ -12,7 +12,7 @@ namespace PricingAndHedging.Exercise02.Exercises
             {
                 var path = new AssetPath(initialAssetPrice, interestRate, volatility, timeToMaturity, numberOfSteps);
 
-                payoffs[i] = Math.Max(0.0, path[numberOfSteps].AssetValue - strike);
+                payoffs[i] = Math.Max(0.0, path[numberOfSteps].AssetPrice - strike);
             }
 
             double averagePayoff = 0.0;

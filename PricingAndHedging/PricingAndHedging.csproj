@@ -36,6 +36,11 @@
       <HintPath>..\packages\MathNet.Numerics.3.11.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Office\Office15\DCF\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -57,6 +62,7 @@
     <Compile Include="Exercise01.cs" />
     <Compile Include="Exercise02\EuropeanCallOption.cs" />
     <Compile Include="Exercise02\Exercise02.cs" />
+    <Compile Include="Exercise02\Portfolio.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

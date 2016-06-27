@@ -54,7 +54,7 @@ namespace PricingAndHedging.Exercise01.BrownianMotion
                 {
                     double leftTime = previousPathTimes[leftIndex];
                     double leftRandomValue = this.path[leftTime].RandomValue;
-                    double leftAssetValue = this.path[leftTime].AssetValue;
+                    double leftAssetValue = this.path[leftTime].AssetPrice;
 
                     double rightTime = previousPathTimes[leftIndex + 1];
                     double rightRandomValue = this.path[rightTime].RandomValue;
@@ -80,7 +80,7 @@ namespace PricingAndHedging.Exercise01.BrownianMotion
 
             if (!barrierHasBeenTouched)
             {
-                payoff = Math.Max(knockOutPutOption.Strike - this.End.AssetValue, 0.0);
+                payoff = Math.Max(knockOutPutOption.Strike - this.End.AssetPrice, 0.0);
                 stats = new Exercise01Stats(this.path.Count - 2, false, payoff);
             }
 

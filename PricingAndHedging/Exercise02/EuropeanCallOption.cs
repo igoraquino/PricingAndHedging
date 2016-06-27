@@ -7,9 +7,9 @@ namespace PricingAndHedging.Exercise02
     {
         #region Constructor
 
-        public EuropeanCallOption(double assetValue, double strike, double timeToMaturityInYears, double interestRateInYears, double volatility)
+        public EuropeanCallOption(double assetPrice, double strike, double timeToMaturityInYears, double interestRateInYears, double volatility)
         {
-            this.AssetValue = assetValue;
+            this.AssetPrice = assetPrice;
             this.Strike = strike;
             this.TimeToMaturityInYears = timeToMaturityInYears;
             this.InterestRateInYears = interestRateInYears;
@@ -20,7 +20,7 @@ namespace PricingAndHedging.Exercise02
 
         #region Properties
 
-        public double AssetValue { get; private set; }
+        public double AssetPrice { get; private set; }
 
         public double Strike { get; private set; }
 
@@ -41,7 +41,7 @@ namespace PricingAndHedging.Exercise02
             {
                 if (double.IsNaN(this.d1))
                 {
-                    double numerator = Math.Log(this.AssetValue / this.Strike) + ((this.InterestRateInYears) + (Math.Pow(this.Volatility, 2.0) / 2.0)) * (this.TimeToMaturityInYears);
+                    double numerator = Math.Log(this.AssetPrice / this.Strike) + ((this.InterestRateInYears) + (Math.Pow(this.Volatility, 2.0) / 2.0)) * (this.TimeToMaturityInYears);
                     double denominator = this.Volatility * Math.Sqrt(this.TimeToMaturityInYears);
                     this.d1 = (numerator / denominator);
                 }
@@ -71,7 +71,12 @@ namespace PricingAndHedging.Exercise02
             {
                 if (double.IsNaN(this.price))
                 {
-                    this.price = this.AssetValue * Normal.CDF(0.0, 1.0, this.D1) - Normal.CDF(0.0, 1.0, this.D2) * this.Strike * Math.Exp(-this.InterestRateInYears * this.TimeToMaturityInYears);
+                    bool expired = (this.TimeToMaturityInYears < 1e-8);
+
+                    if (expired)
+                        this.price = Math.Max(0.0, (this.AssetPrice - this.Strike));
+                    else
+                        this.price = this.AssetPrice * Normal.CDF(0.0, 1.0, this.D1) - Normal.CDF(0.0, 1.0, this.D2) * this.Strike * Math.Exp(-this.InterestRateInYears * this.TimeToMaturityInYears);
                 }
 
                 return this.price;
@@ -85,7 +90,12 @@ namespace PricingAndHedging.Exercise02
             {
                 if (double.IsNaN(this.delta))
                 {
-                    this.delta = Normal.CDF(0, 1, this.D1);
+                    bool expired = (this.TimeToMaturityInYears < 1e-8);
+
+                    if (expired)
+                        this.delta = 0.0;
+                    else
+                        this.delta = Normal.CDF(0, 1, this.D1);
                 }
 
                 return this.delta;

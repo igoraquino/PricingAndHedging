@@ -6,13 +6,13 @@
         {
             this.Time = time;
             this.RandomValue = randomValue;
-            this.AssetValue = assetValue;
+            this.AssetPrice = assetValue;
         }
 
         public double Time { get; private set; }
 
         public double RandomValue { get; private set; }
 
-        public double AssetValue { get; private set; }
+        public double AssetPrice { get; private set; }
     }
 }
