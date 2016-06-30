@@ -63,6 +63,12 @@
     <Compile Include="Exercise02\EuropeanCallOption.cs" />
     <Compile Include="Exercise02\Exercise02.cs" />
     <Compile Include="Exercise02\Portfolio.cs" />
+    <Compile Include="FinalExamPresentation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FinalExamPresentation.Designer.cs">
+      <DependentUpon>FinalExamPresentation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +78,11 @@
     <Compile Include="KnockOutPutOption.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VolatilitiesForDate.cs" />
+    <Compile Include="VolatilityData.cs" />
+    <EmbeddedResource Include="FinalExamPresentation.resx">
+      <DependentUpon>FinalExamPresentation.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
