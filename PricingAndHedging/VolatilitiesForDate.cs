@@ -45,27 +45,21 @@ namespace PricingAndHedging.FinalExam
 
         #region Methods to retrieve interpolated volatility
 
-        private double GetActual365DateValue(DateTime from, DateTime to)
-        {
-            double totalDays = (to - from).TotalDays;
-            return (totalDays / 360.0);
-        }
-
         private double GetInterpolatedVol(DateTime targetDate, DateTime leftDate, double leftVol, DateTime rightDate, double rightVol)
         {
-            double effectiveVarianceFromReferenceDateToLeftDate = Math.Pow(leftVol, 2.0) * this.GetActual365DateValue(this.ReferenceDate, leftDate);
+            double effectiveVarianceFromReferenceDateToLeftDate = Math.Pow(leftVol, 2.0) * TAU.Act365(this.ReferenceDate, leftDate);
 
-            double effectiveVarianceFromReferenceDateToRightDate = Math.Pow(rightVol, 2.0) * this.GetActual365DateValue(this.ReferenceDate, rightDate);
+            double effectiveVarianceFromReferenceDateToRightDate = Math.Pow(rightVol, 2.0) * TAU.Act365(this.ReferenceDate, rightDate);
 
             double effectiveVarianceFromLeftDateToRightDate = effectiveVarianceFromReferenceDateToRightDate - effectiveVarianceFromReferenceDateToLeftDate;
 
-            double volatilityFromLeftDateToRightDate = Math.Sqrt(effectiveVarianceFromLeftDateToRightDate / this.GetActual365DateValue(leftDate, rightDate));
+            double volatilityFromLeftDateToRightDate = Math.Sqrt(effectiveVarianceFromLeftDateToRightDate / TAU.Act365(leftDate, rightDate));
 
-            double effectiveVarianceFromLeftDateToTargetDate = Math.Pow(volatilityFromLeftDateToRightDate, 2.0) * this.GetActual365DateValue(leftDate, targetDate);
+            double effectiveVarianceFromLeftDateToTargetDate = Math.Pow(volatilityFromLeftDateToRightDate, 2.0) * TAU.Act365(leftDate, targetDate);
 
             double effectiveVarianceFromReferenceDateToTargetDate = effectiveVarianceFromReferenceDateToLeftDate + effectiveVarianceFromLeftDateToTargetDate;
 
-            double volatilityFromReferenceDateToTargetDate = Math.Sqrt(effectiveVarianceFromReferenceDateToTargetDate / this.GetActual365DateValue(this.ReferenceDate, targetDate));
+            double volatilityFromReferenceDateToTargetDate = Math.Sqrt(effectiveVarianceFromReferenceDateToTargetDate / TAU.Act365(this.ReferenceDate, targetDate));
 
             return volatilityFromReferenceDateToTargetDate;
         }
