@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace PricingAndHedging.FinalExam
 {
-    public class FWDS
+    public static class FWDS
     {
         private static Dictionary<DateTime, ForwardsForDate> ForwardsByDate = new Dictionary<DateTime, ForwardsForDate>()
         {
@@ -655,9 +655,9 @@ namespace PricingAndHedging.FinalExam
             { new DateTime(2016,6,22), new ForwardsForDate(new DateTime(2016,6,22),3.3775,3.4031,3.4594,3.6928)}
         };
 
-        public ForwardsForDate this[DateTime referenceDate]
+        public static double GetFwd(DateTime from, DateTime to)
         {
-            get { return ForwardsByDate[referenceDate]; }
+            return FWDS.ForwardsByDate[from].GetFwd(to);
         }
     }
 }
