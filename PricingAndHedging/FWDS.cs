@@ -558,7 +558,7 @@ namespace PricingAndHedging.FinalExam
             { new DateTime(2016,2,8), new ForwardsForDate(new DateTime(2016,2,8),3.9066,3.9511,3.9955,4.3337)},
             { new DateTime(2016,2,9), new ForwardsForDate(new DateTime(2016,2,9),3.9066,3.9511,3.9955,4.3337)},
             { new DateTime(2016,2,10), new ForwardsForDate(new DateTime(2016,2,10),3.9295,3.9629,3.964,4.3441)},
-            { new DateTime(2016,2,11), new ForwardsForDate(new DateTime(2016,2,11),3.9925,4.0354,3.0055,4.4237)},
+            { new DateTime(2016,2,11), new ForwardsForDate(new DateTime(2016,2,11),3.9925,4.0354,4.000,4.4237)},
             { new DateTime(2016,2,12), new ForwardsForDate(new DateTime(2016,2,12),4.0017,4.0358,4.008,4.429)},
             { new DateTime(2016,2,15), new ForwardsForDate(new DateTime(2016,2,15),3.9973,4.0333,4.0075,4.4195)},
             { new DateTime(2016,2,16), new ForwardsForDate(new DateTime(2016,2,16),4.068,4.1132,4.1065,4.4972)},
