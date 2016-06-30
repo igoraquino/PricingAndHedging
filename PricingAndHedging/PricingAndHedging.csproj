@@ -79,6 +79,8 @@
     <Compile Include="FWDS.cs" />
     <Compile Include="InteresRatesForDate.cs" />
     <Compile Include="KnockOutPutOption.cs" />
+    <Compile Include="Portfolio.cs" />
+    <Compile Include="PortfolioResults.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RATES.cs" />
