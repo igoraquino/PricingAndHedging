@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace PricingAndHedging.FinalExam
 {
-    public class RATES
+    public static class RATES
     {
         private static Dictionary<DateTime, InterestRatesForDate> InterestRatesByDate = new Dictionary<DateTime, InterestRatesForDate>()
         {
@@ -655,9 +655,9 @@ namespace PricingAndHedging.FinalExam
             { new DateTime(2016,6,22), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)}
         };
 
-        public InterestRatesForDate this[DateTime referenceDate]
+        public static double GetRate(DateTime from, DateTime to)
         {
-            get { return InterestRatesByDate[referenceDate]; }
+            return InterestRatesByDate[from].GetCDI(to);
         }
     }
 }
