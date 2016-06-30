@@ -11,6 +11,7 @@ using PricingAndHedging.Exercise02.Exercises;
 using System.Text;
 using System.Diagnostics;
 using PricingAndHedging.Exercise02;
+using System.Collections.Generic;
 
 namespace PricingAndHedging.Exercise01
 {
@@ -123,7 +124,89 @@ namespace PricingAndHedging.Exercise01
 
         private void exercise02_Click(object sender, EventArgs e)
         {
-            var call = new EuropeanCallOption(100.0, 100.0, 1.0, 0.0, .20);
+            PrintHedgePortfolioStepByStep();
+        }
+
+        private void PrintHedgePortfolioStepByStep()
+        {
+            int pathCount = 500;
+            int stepsCount = 50000;
+
+            double initialPrice = 100.0;
+            double interestRate = 0.0;
+            double actualVolatility = 0.30;
+            double impliedVolatility = 0.20;
+            double timeToMaturity = 1.0;
+            double strike = 100.0;
+
+            double pricingVolatility = impliedVolatility;
+            //double hedgingVolatility = actualVolatility;
+            double hedgingVolatility = impliedVolatility;
+
+            var text = new StringBuilder();
+            var portfolioPricesByPathIndex = new Dictionary<int, IList<double>>();
+            for (int pathIndex = 0; pathIndex < pathCount; pathIndex++)
+            {
+                var path = new AssetPath(initialPrice, interestRate, actualVolatility, timeToMaturity, stepsCount);
+
+                double timeStepSize = (timeToMaturity / stepsCount);
+                
+                var previousPortfolio = new Portfolio(strike, timeToMaturity, interestRate, pricingVolatility, hedgingVolatility, 0.0, 0.0, timeStepSize);
+
+                //Console.WriteLine("currentAssetPrice,pricingOption.Price,assetAmountForHedging,cash,portfolioValue");
+            
+                var portfolioPrices = new List<double>();
+                portfolioPrices.Add(previousPortfolio.Value(path[0].AssetPrice));
+
+                for (int hedgeIndex = 1; hedgeIndex <= stepsCount; hedgeIndex++)
+                {
+                    double currentTimeToMaturity = 1.0 - (hedgeIndex * timeStepSize);
+                    double previousAssetAmount = previousPortfolio.AssetAmountForHedging(path[hedgeIndex - 1].AssetPrice);
+                    double previousCash = previousPortfolio.Cash(path[hedgeIndex - 1].AssetPrice);
+                    
+                    var currentPortfolio = new Portfolio(strike, currentTimeToMaturity, interestRate, pricingVolatility, hedgingVolatility, previousAssetAmount, previousCash, timeStepSize);
+
+                    portfolioPrices.Add(currentPortfolio.Value(path[hedgeIndex].AssetPrice));
+                }
+
+                //Console.WriteLine(portfolioPrices[0].ToString("0.0000"));
+                //for (int i = 1; i < portfolioPrices.Count; i++)
+                //{
+                //    double profit = portfolioPrices[i] - portfolioPrices[i - 1];
+                //    Console.WriteLine(portfolioPrices[i].ToString("0.0000") + "\t\t" + profit);
+                //}
+
+                //portfolioPricesByPathIndex[pathIndex] = portfolioPrices;
+
+                //Console.WriteLine(portfolioPrices[stepsCount].ToString("0.0000"));
+                text.AppendLine(portfolioPrices[stepsCount].ToString("0.0000"));
+            }
+
+            //for (int i = 0; i <= stepsCount; i++)
+            //{
+            //    var line = new StringBuilder();
+
+            //    foreach (IList<double> portfolioPrices in portfolioPricesByPathIndex.Values)
+            //        line.Append(portfolioPrices[i].ToString("0.0000")).Append(",");
+
+            //    text.AppendLine(line.ToString());
+            //}
+
+            var fileName = @"%TEMP%\" + DateTime.Now.ToString("HHmmss") + "_Hedge.csv";
+            fileName = Environment.ExpandEnvironmentVariables(fileName);
+            StreamWriter logFileStream = File.AppendText(fileName);
+            logFileStream.WriteLine(text.ToString());
+            logFileStream.Flush();
+            logFileStream.Close();
+
+            var excel = new Microsoft.Office.Interop.Excel.Application();
+            var workbook = excel.Workbooks.Open(fileName);
+            excel.Visible = true;
+        }
+
+        private void CalculateEuropeanCall()
+        {
+            var call = new EuropeanCallOption(100.0, 102.0, 1.7, 0.08, .20);
             MessageBox.Show(call.Price + "\n" + call.Delta);
         }
 
