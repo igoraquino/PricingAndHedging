@@ -26,6 +26,13 @@ namespace PricingAndHedging.FinalExam
             MessageBox.Show(f.GetFwd(new DateTime(2014, 7, 10)).ToString());
             MessageBox.Show(f.GetFwd(new DateTime(2014, 9, 10)).ToString());
             MessageBox.Show(f.GetFwd(new DateTime(2014, 10, 1)).ToString());
+            MessageBox.Show(f.GetFwd(new DateTime(2015, 5, 10)).ToString());
+
+            var ir = new InterestRatesForDate(new DateTime(2014, 7, 1), 0.1081, 0.107741, 0.108398);
+            MessageBox.Show(ir.GetCDI(new DateTime(2014, 7, 10)).ToString());
+            MessageBox.Show(ir.GetCDI(new DateTime(2014, 9, 10)).ToString());
+            MessageBox.Show(ir.GetCDI(new DateTime(2014, 10, 1)).ToString());
+            MessageBox.Show(ir.GetCDI(new DateTime(2015, 5, 10)).ToString());
         }
     }
 }

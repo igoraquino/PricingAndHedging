@@ -76,6 +76,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="ForwardsForDate.cs" />
+    <Compile Include="InteresRatesForDate.cs" />
     <Compile Include="KnockOutPutOption.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
