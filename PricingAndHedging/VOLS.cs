@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace PricingAndHedging.FinalExam
 {
-    public class VOLS
+    public static class VOLS
     {
         private static Dictionary<DateTime, VolatilitiesForDate> VolatilitiesByDate = new Dictionary<DateTime, VolatilitiesForDate>()
         {
@@ -655,9 +655,9 @@ namespace PricingAndHedging.FinalExam
             { new DateTime(2016,6,22), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)}
         };
 
-        public VolatilitiesForDate this[DateTime referenceDate]
+        public static double GetVol(DateTime from, DateTime to)
         {
-            get { return VolatilitiesByDate[referenceDate]; }
+            return VolatilitiesByDate[from].GetVol(to);
         }
     }
 }
