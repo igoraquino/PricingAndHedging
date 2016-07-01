@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PricingAndHedging.FinalExam
+namespace PricingAndHedging.FinalExam.DataProviders
 {
     public static class FWDS
     {

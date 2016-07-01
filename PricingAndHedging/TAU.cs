@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PricingAndHedging.FinalExam
+namespace PricingAndHedging.FinalExam.DataProviders
 {
     public class TAU
     {
