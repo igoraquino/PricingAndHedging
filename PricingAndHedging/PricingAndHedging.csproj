@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BmfCalendar.cs" />
     <Compile Include="Exercise02\AssetPath.cs" />
     <Compile Include="BrownianBridge.cs" />
     <Compile Include="BrownianMotion.cs" />
