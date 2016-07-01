@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PricingAndHedging.FinalExam.DataProviders;
+using System;
 
 namespace PricingAndHedging.FinalExam
 {
@@ -45,11 +46,11 @@ namespace PricingAndHedging.FinalExam
 
         #region Methods to retrieve interpolated volatility
 
-        private double GetInterpolatedVol(DateTime targetDate, DateTime leftDate, double leftVol, DateTime rightDate, double rightVol)
+        private double GetInterpolatedVol(DateTime referenceDate, DateTime targetDate, DateTime leftDate, double leftVol, DateTime rightDate, double rightVol)
         {
-            double effectiveVarianceFromReferenceDateToLeftDate = Math.Pow(leftVol, 2.0) * TAU.Act365(this.ReferenceDate, leftDate);
+            double effectiveVarianceFromReferenceDateToLeftDate = Math.Pow(leftVol, 2.0) * TAU.Act365(referenceDate, leftDate);
 
-            double effectiveVarianceFromReferenceDateToRightDate = Math.Pow(rightVol, 2.0) * TAU.Act365(this.ReferenceDate, rightDate);
+            double effectiveVarianceFromReferenceDateToRightDate = Math.Pow(rightVol, 2.0) * TAU.Act365(referenceDate, rightDate);
 
             double effectiveVarianceFromLeftDateToRightDate = effectiveVarianceFromReferenceDateToRightDate - effectiveVarianceFromReferenceDateToLeftDate;
 
@@ -59,7 +60,7 @@ namespace PricingAndHedging.FinalExam
 
             double effectiveVarianceFromReferenceDateToTargetDate = effectiveVarianceFromReferenceDateToLeftDate + effectiveVarianceFromLeftDateToTargetDate;
 
-            double volatilityFromReferenceDateToTargetDate = Math.Sqrt(effectiveVarianceFromReferenceDateToTargetDate / TAU.Act365(this.ReferenceDate, targetDate));
+            double volatilityFromReferenceDateToTargetDate = Math.Sqrt(effectiveVarianceFromReferenceDateToTargetDate / TAU.Act365(referenceDate, targetDate));
 
             return volatilityFromReferenceDateToTargetDate;
         }
@@ -72,11 +73,11 @@ namespace PricingAndHedging.FinalExam
             }
             else if (expiry <= this.Tenor3M)
             {
-                return this.GetInterpolatedVol(expiry, this.Tenor1M, this.Vol1M, this.Tenor3M, this.Vol3M);
+                return this.GetInterpolatedVol(this.ReferenceDate, expiry, this.Tenor1M, this.Vol1M, this.Tenor3M, this.Vol3M);
             }
             else
             {
-                return this.GetInterpolatedVol(expiry, this.Tenor3M, this.Vol3M, this.Tenor12M, this.Vol12M);                
+                return this.GetInterpolatedVol(this.ReferenceDate, expiry, this.Tenor3M, this.Vol3M, this.Tenor12M, this.Vol12M);                
             }
         }
 

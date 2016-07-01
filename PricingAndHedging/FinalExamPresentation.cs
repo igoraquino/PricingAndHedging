@@ -1,11 +1,6 @@
+using PricingAndHedging.FinalExam.DataProviders;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PricingAndHedging.FinalExam
@@ -32,6 +27,7 @@ namespace PricingAndHedging.FinalExam
 
         private void Experiments()
         {
+            this.HedgedPortfolio();
             MessageBox.Show(BmfCalendar.IsBusinessDate(DateTime.Today.AddDays(2)).ToString());
             MessageBox.Show(BmfCalendar.IsBusinessDate(DateTime.Today).ToString());
             MessageBox.Show(BmfCalendar.IsBusinessDate(new DateTime(1991, 01, 01)).ToString());            
@@ -40,11 +36,13 @@ namespace PricingAndHedging.FinalExam
         private void HedgedPortfolio()
         {
             var tradeDate = new DateTime(2015, 06, 30);
-            var maturity = tradeDate.AddMonths(1);
+            var maturity = tradeDate.AddMonths(12);
 
+            var call = new BlackEuropeanCallOption(tradeDate, maturity, FWDS.GetFwd(tradeDate, maturity));
+
+            MessageBox.Show(call.Price + "\t" + call.Delta);
+            
             var portfolioByDate = new Dictionary<DateTime, Portfolio>();
-
-
 
             var currentDay = tradeDate;
             while ((currentDay < maturity))
@@ -61,8 +59,19 @@ namespace PricingAndHedging.FinalExam
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.InterpolationExperiments();
-            this.Experiments();
+            var tradeDate = new DateTime(2015, 06, 30);
+            var maturity = tradeDate.AddMonths(12);
+
+            double forward = FWDS.GetFwd(tradeDate, maturity);
+            double strike = FWDS.GetFwd(tradeDate, maturity);
+            double timeToMaturity = TAU.Act365(tradeDate, maturity);
+            double interestRate = RATES.GetRate(tradeDate, maturity);
+            double volatility = VOLS.GetVol(tradeDate, maturity);
+
+            var call = new BlackEuropeanCallOption(tradeDate, maturity, strike);
+            MessageBox.Show(call.Price + "\t" + call.Delta);
+
+            MessageBox.Show("discounted delta: "+ Math.Exp(-interestRate * timeToMaturity) * call.Delta);
         }
     }
 }

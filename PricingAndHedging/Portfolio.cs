@@ -1,111 +1,119 @@
 using MathNet.Numerics.Distributions;
+using PricingAndHedging.FinalExam.DataProviders;
 using System;
 
 namespace PricingAndHedging.FinalExam
 {
-    public class BlackEuropeanCallOption
+    public class Portfolio
     {
+        #region Fields
+
+        private DateTime currentDate;
+        private DateTime maturity;
+        private double strike;
+        private double forward;
+        private double interestRateInYears;
+        private double volatility;
+        private double initialHedgingNotional;
+        private double initialCash;
+        private double timeStepSize;
+
+        private double timeToMaturityInYears;
+        private bool isHedged;
+
+        private double portfolioValue;
+        private double hedgingNotional;
+        private double cash;
+
+        #endregion
+
         #region Constructor
 
-        public BlackEuropeanCallOption(double forward, double strike, double timeToMaturityInYears, double interestRate, double volatility)
+        public Portfolio(DateTime currentDate, DateTime maturity, double strike, double initialHedgingNotional, double initialCash, double timeStepSize)
         {
-            this.Forward = forward;
-            this.Strike = strike;
-            this.TimeToMaturityInYears = timeToMaturityInYears;
-            this.InterestRate = interestRate;
-            this.Volatility = volatility;
+            this.currentDate = currentDate;
+            this.maturity = maturity;
+            this.strike = strike;
+            this.initialHedgingNotional = initialHedgingNotional;
+            this.initialCash = initialCash;
+            this.timeStepSize = timeStepSize;
+
+            this.forward = FWDS.GetFwd(this.currentDate, this.maturity);
+            this.interestRateInYears = RATES.GetRate(this.currentDate, this.maturity);
+            this.volatility = VOLS.GetVol(this.currentDate, this.maturity);
+            this.timeToMaturityInYears = TAU.Act365(currentDate, maturity);
+            this.isHedged = false;
+        }
+
+        #endregion
+
+        #region Methods to delta hedge the option
+
+        private void Hedge(double currentForwardPrice)
+        {
+            this.isHedged = true;
+
+            var option = new BlackEuropeanCallOption(this.currentDate, this.maturity, this.strike);
+
+            //if (this.currentDate == this.maturity)
+            //{
+            //    this.hedgingNotional = 0.0;
+
+            //    double initialCashAdjusted = this.initialCash * Math.Exp(this.interestRateInYears * this.timeStepSize);
+
+            //    double ndfAdjust = (PTAX.GetValue(BmfCalendar.PlusBusinessDays(this.maturity, -1)) - this.forward);
+
+            //    this.cash = initialCashAdjusted + ndfAdjust;
+
+            //    this.portfolioValue = (option.Price) - this.initialHedgingNotional * (currentForwardPrice) + this.cash;
+            //}
+            //else
+            //{
+            //    this.hedgingNotional = option.Delta;
+            //    double notionalVariation = this.hedgingNotional - this.initialHedgingNotional;
+
+            //    double cashUsedForHedging = assetAmountVariation * currentAssetPrice;
+
+            //    double rolledInitialCash = this.initialCash * Math.Exp(this.interestRateInYears * this.timeStepSize);
+
+            //    this.cash = (cashUsedForHedging + rolledInitialCash);
+
+            //    bool isFirstInteration = ((this.initialAssetAmount < 1e-6) && (this.initialCash < 1e-6));
+            //    if (isFirstInteration)
+            //        this.cash = this.cash - pricingOption.Price;
+
+            //    this.portfolioValue = (pricingOption.Price) - (this.assetAmountForHedging * currentAssetPrice) + this.cash;
+            //}                                 
         }
 
         #endregion
 
         #region Properties
 
-        public double Forward { get; private set; }
-
-        public double Strike { get; private set; }
-
-        public double TimeToMaturityInYears { get; private set; }
-
-        public double InterestRate { get; private set; }
-
-        public double Volatility { get; private set; }
-
-        #endregion
-
-        #region Black & Scholes Formulas
-
-        private double d1 = double.NaN;
-        private double D1
+        public double Value(double currentForwardPrice)
         {
-            get
-            {
-                if (double.IsNaN(this.d1))
-                {
-                    double numerator = Math.Log(this.Forward / this.Strike) + (Math.Pow(this.Volatility, 2.0) / 2.0) * (this.TimeToMaturityInYears);
-                    double denominator = this.Volatility * Math.Sqrt(this.TimeToMaturityInYears);
-                    this.d1 = (numerator / denominator);
-                }
+            if (!this.isHedged)
+                this.Hedge(currentForwardPrice);
 
-                return this.d1;
-            }
+            return this.portfolioValue;
         }
 
-        private double d2 = double.NaN;
-        private double D2
+        public double HedgingNotional(double currentForwardPrice)
         {
-            get
-            {
-                if (double.IsNaN(this.d2))
-                {
-                    this.d2 = this.D1 - this.Volatility * Math.Sqrt(this.TimeToMaturityInYears);
-                }
+            if (!this.isHedged)
+                this.Hedge(currentForwardPrice);
 
-                return this.d2;
-            }
+            return this.hedgingNotional;
         }
 
-        private double price = double.NaN;
-        public double Price
+        public double Cash(double currentForwardPrice)
         {
-            get
-            {
-                if (double.IsNaN(this.price))
-                {
-                    bool expired = (this.TimeToMaturityInYears < 1e-8);
+            if (!this.isHedged)
+                this.Hedge(currentForwardPrice);
 
-                    if (expired)
-                        this.price = Math.Max(0.0, (this.Forward - this.Strike));
-                    else
-                        this.price = (Math.Exp(-this.InterestRate * this.TimeToMaturityInYears)) * (this.Forward * Normal.CDF(0.0, 1.0, this.D1) - this.Strike * Normal.CDF(0.0, 1.0, this.D2));
-                }
-
-                return this.price;
-            }
-        }
-
-        private double delta = double.NaN;
-        public double Delta
-        {
-            get
-            {
-                if (double.IsNaN(this.delta))
-                {
-                    bool expired = (this.TimeToMaturityInYears < 1e-8);
-
-                    if (expired)
-                        this.delta = 0.0;
-                    else
-                        this.delta = Normal.CDF(0, 1, this.D1);
-                }
-
-                return this.delta;
-            }
+            return this.cash;
         }
 
         #endregion
-    }
-
-    public class Portfolio
-    {
     }
 }

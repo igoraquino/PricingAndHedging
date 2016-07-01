@@ -38,5 +38,17 @@ namespace PricingAndHedging
 
             return true;
         }
+
+        //public static DateTime PlusBusinessDays(int days)
+        //{
+        //    int i = 0;
+        //    while (i != days)
+        //    {
+        //        if (days > 0)
+        //        {
+
+        //        }
+        //    }
+        //}
     }
 }
