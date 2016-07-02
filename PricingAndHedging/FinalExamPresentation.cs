@@ -37,8 +37,9 @@ namespace PricingAndHedging.FinalExam
         {
             var tradeDate = new DateTime(2015, 06, 30);
             var maturity = tradeDate.AddMonths(12);
+            var strike = FWDS.GetFwd(tradeDate, maturity);
 
-            var call = new BlackEuropeanCallOption(tradeDate, maturity, FWDS.GetFwd(tradeDate, maturity));
+            var call = new BlackEuropeanCallOption(tradeDate, maturity, strike);
 
             MessageBox.Show(call.Price + "\t" + call.Delta);
             
