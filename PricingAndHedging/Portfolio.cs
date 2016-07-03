@@ -11,15 +11,16 @@ namespace PricingAndHedging.FinalExam
         private DateTime currentDate;
         private DateTime maturity;
         private double strike;
-        private double forward;
         private double interestRateInYears;
         private double volatility;
         private double initialHedgingNotional;
         private double initialCash;
         private double timeStepSize;
+        private bool hasHedge;
 
         private double timeToMaturityInYears;
-        private bool isHedged;
+        private bool isEvaluated;
+        private IOption option;
 
         private double portfolioValue;
         private double hedgingNotional;
@@ -29,7 +30,7 @@ namespace PricingAndHedging.FinalExam
 
         #region Constructor
 
-        public Portfolio(DateTime currentDate, DateTime maturity, double strike, double initialHedgingNotional, double initialCash, double timeStepSize)
+        public Portfolio(DateTime currentDate, DateTime maturity, double strike, double initialHedgingNotional, double initialCash, double timeStepSize, bool hasHedge)
         {
             this.currentDate = currentDate;
             this.maturity = maturity;
@@ -37,81 +38,125 @@ namespace PricingAndHedging.FinalExam
             this.initialHedgingNotional = initialHedgingNotional;
             this.initialCash = initialCash;
             this.timeStepSize = timeStepSize;
+            this.hasHedge = hasHedge;
 
-            this.forward = FWDS.GetFwd(this.currentDate, this.maturity);
             this.interestRateInYears = RATES.GetRate(this.currentDate, this.maturity);
             this.volatility = VOLS.GetVol(this.currentDate, this.maturity);
             this.timeToMaturityInYears = TAU.Act365(currentDate, maturity);
-            this.isHedged = false;
+            this.isEvaluated = false;
         }
 
         #endregion
 
         #region Methods to delta hedge the option
 
-        private void Hedge(double currentForwardPrice)
+        private void Evaluate()
         {
-            this.isHedged = true;
+            this.isEvaluated = true;
 
-            var option = new BlackEuropeanCallOption(this.currentDate, this.maturity, this.strike);
+            this.option = new BlackEuropeanCallOption(this.currentDate, this.maturity, this.strike);
 
-            //if (this.currentDate == this.maturity)
-            //{
-            //    this.hedgingNotional = 0.0;
+            if (this.hasHedge)
+            {
+                if (this.currentDate == this.maturity)
+                {
+                    this.hedgingNotional = 0.0;
 
-            //    double initialCashAdjusted = this.initialCash * Math.Exp(this.interestRateInYears * this.timeStepSize);
+                    double rolledInitialCash = this.initialCash * Math.Exp(this.interestRateInYears * this.timeStepSize);
 
-            //    double ndfAdjust = (PTAX.GetValue(BmfCalendar.PlusBusinessDays(this.maturity, -1)) - this.forward);
+                    DateTime yesterday = BmfCalendar.PlusBusinessDays(this.currentDate, -1);
 
-            //    this.cash = initialCashAdjusted + ndfAdjust;
+                    double ndfAdjust = (PTAX.GetValue(this.currentDate) - FWDS.GetFwd(yesterday, this.maturity));
 
-            //    this.portfolioValue = (option.Price) - this.initialHedgingNotional * (currentForwardPrice) + this.cash;
-            //}
-            //else
-            //{
-            //    this.hedgingNotional = option.Delta;
-            //    double notionalVariation = this.hedgingNotional - this.initialHedgingNotional;
+                    this.cash = rolledInitialCash + (this.initialHedgingNotional * ndfAdjust);
+                }
+                else
+                {
+                    this.hedgingNotional = option.Delta;
 
-            //    double cashUsedForHedging = assetAmountVariation * currentAssetPrice;
+                    bool isFirstInteration = ((Math.Abs(this.initialHedgingNotional) < 1e-6) && (Math.Abs(this.initialCash) < 1e-6));
 
-            //    double rolledInitialCash = this.initialCash * Math.Exp(this.interestRateInYears * this.timeStepSize);
+                    if (isFirstInteration)
+                    {
+                        this.cash = -option.Price;
+                    }
+                    else
+                    {
+                        double rolledInitialCash = this.initialCash * Math.Exp(this.interestRateInYears * this.timeStepSize);
 
-            //    this.cash = (cashUsedForHedging + rolledInitialCash);
+                        DateTime yesterday = BmfCalendar.PlusBusinessDays(this.currentDate, -1);
 
-            //    bool isFirstInteration = ((this.initialAssetAmount < 1e-6) && (this.initialCash < 1e-6));
-            //    if (isFirstInteration)
-            //        this.cash = this.cash - pricingOption.Price;
+                        double ndfAdjust = (FWDS.GetFwd(this.currentDate, this.maturity) - FWDS.GetFwd(yesterday, this.maturity));
 
-            //    this.portfolioValue = (pricingOption.Price) - (this.assetAmountForHedging * currentAssetPrice) + this.cash;
-            //}                                 
+                        double discountFactor = Math.Exp(-this.interestRateInYears * this.timeToMaturityInYears);
+
+                        this.cash = rolledInitialCash + (this.initialHedgingNotional * ndfAdjust * discountFactor);
+                    }
+                }
+            }
+            else
+            {
+                bool isFirstInteration = ((Math.Abs(this.initialHedgingNotional) < 1e-10) && (Math.Abs(this.initialCash) < 1e-10));
+
+                if (isFirstInteration)
+                {
+                    this.cash = -option.Price;
+                }
+                else
+                {
+                    this.cash = this.initialCash * Math.Exp(this.interestRateInYears * this.timeStepSize);
+                }
+            }
+
+            this.portfolioValue = option.Price + this.cash;
         }
 
         #endregion
 
         #region Properties
 
-        public double Value(double currentForwardPrice)
+        public double Value
         {
-            if (!this.isHedged)
-                this.Hedge(currentForwardPrice);
+            get
+            {
+                if (!this.isEvaluated)
+                    this.Evaluate();
 
-            return this.portfolioValue;
+                return this.portfolioValue;
+            }
         }
 
-        public double HedgingNotional(double currentForwardPrice)
+        public double HedgingNotional
         {
-            if (!this.isHedged)
-                this.Hedge(currentForwardPrice);
+            get
+            {
+                if (!this.isEvaluated)
+                    this.Evaluate();
 
-            return this.hedgingNotional;
+                return this.hedgingNotional;
+            }
         }
 
-        public double Cash(double currentForwardPrice)
+        public double Cash
         {
-            if (!this.isHedged)
-                this.Hedge(currentForwardPrice);
+            get
+            {
+                if (!this.isEvaluated)
+                    this.Evaluate();
 
-            return this.cash;
+                return this.cash;
+            }
+        }
+
+        public IOption Option
+        {
+            get
+            {
+                if (!this.isEvaluated)
+                    this.Evaluate();
+
+                return this.option;
+            }
         }
 
         #endregion
