@@ -80,6 +80,7 @@
     <Compile Include="ForwardsForDate.cs" />
     <Compile Include="FWDS.cs" />
     <Compile Include="InteresRatesForDate.cs" />
+    <Compile Include="IOption.cs" />
     <Compile Include="KnockOutPutOption.cs" />
     <Compile Include="Portfolio.cs" />
     <Compile Include="PortfolioResults.cs" />

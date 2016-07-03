@@ -4,7 +4,7 @@ using System;
 
 namespace PricingAndHedging.FinalExam
 {
-    public class BlackEuropeanCallOption
+    public class BlackEuropeanCallOption : IOption
     {
         #region Constructor
 
