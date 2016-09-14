@@ -16,7 +16,8 @@ namespace PricingAndHedging.Exercise01
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FinalExam.FinalExamPresentation());
+            //Application.Run(new FinalExam.FinalExamPresentation());
+            Application.Run(new PartialPresentationSeptember.SeptemberPresentation());
         }
     }
 }
