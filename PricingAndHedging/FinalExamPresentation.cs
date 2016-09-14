@@ -1,6 +1,9 @@
+using PricingAndHedging.Exercise02.Exercises;
 using PricingAndHedging.FinalExam.DataProviders;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 using System.Windows.Forms;
 
 namespace PricingAndHedging.FinalExam
@@ -27,52 +30,165 @@ namespace PricingAndHedging.FinalExam
 
         private void Experiments()
         {
-            this.HedgedPortfolio();
             MessageBox.Show(BmfCalendar.IsBusinessDate(DateTime.Today.AddDays(2)).ToString());
             MessageBox.Show(BmfCalendar.IsBusinessDate(DateTime.Today).ToString());
             MessageBox.Show(BmfCalendar.IsBusinessDate(new DateTime(1991, 01, 01)).ToString());            
         }
 
-        private void HedgedPortfolio()
+        private void button1_Click(object sender, EventArgs e)
         {
-            var tradeDate = new DateTime(2015, 06, 30);
-            var maturity = tradeDate.AddMonths(12);
-            var strike = FWDS.GetFwd(tradeDate, maturity);
+            Question4();
+        }
 
-            var call = new BlackEuropeanCallOption(tradeDate, maturity, strike);
+        private void Question4()
+        {
+            double initialAssetPrice = 3.01807818609578;
+            double strike = 3.4828;
+            double interestRate = 0.142825;
+            double volatility = 0.15985;
+            double timeToMaturity = (366/365);
 
-            MessageBox.Show(call.Price + "\t" + call.Delta);
-            
-            var portfolioByDate = new Dictionary<DateTime, Portfolio>();
+            //var pathsCountRange = new[] { 70000, 70000, 80000, 80000, 90000, 90000, 100000, 100000 };
+            //var stepsCount = new[] { 1000, 1000, 3000, 3000, 5000, 5000, 10000, 10000 };
 
-            var currentDay = tradeDate;
-            while ((currentDay < maturity))
+            var pathsCountRange = new[] { 1000, 1000, 5000, 5000, 10000, 10000, 50000, 50000 };
+            var stepsCount = new[] { 600, 600 };
+
+            Console.WriteLine("Paths,Steps,Premium,Time,Erro");
+
+            for (int pathIndex = 0; pathIndex < pathsCountRange.Length; pathIndex++)
             {
-                if (!BmfCalendar.IsBusinessDate(currentDay))
+                for (int stepIndex = 0; stepIndex < stepsCount.Length; stepIndex++)
                 {
-                    currentDay.AddDays(1);
-                    continue;
+                    var numberOfPaths = pathsCountRange[pathIndex];
+                    var numberOfSteps = stepsCount[stepIndex];
+                    Stopwatch s = new Stopwatch();
+                    s.Start();
+                    var premium = new PremiumTest().EvaluateCallOption(initialAssetPrice, strike, interestRate, volatility, timeToMaturity, numberOfPaths, numberOfSteps);
+                    var error = Math.Abs(1 - premium / 0.192523547344284);
+                    Console.WriteLine(numberOfPaths + "," + numberOfSteps + "," + premium + "," + s.Elapsed.TotalSeconds + "," + error);
                 }
+            }
 
+        }
 
+        private void Question5()
+        {
+            DateTime tradeDate = new DateTime(2015, 06, 30);
+            DateTime maturity = tradeDate.AddMonths(3);
+            double strike = FWDS.GetFwd(tradeDate, maturity);
+            bool hasHedge = true;
+
+            DateTime nextDate = BmfCalendar.PlusBusinessDays(tradeDate, 1);
+            double timeStep = ((nextDate - tradeDate).TotalDays / 365.0);
+
+            PortfolioSellSide previousPortfolio = new PortfolioSellSide(tradeDate, maturity, strike, 0.0, 0.0, timeStep, hasHedge, true);
+
+            Console.WriteLine("Reference Date,Portfolio Value,Option Price,Hedging Notional,Cash,PTAX,Forward,Strike");
+            LogOnConsole(previousPortfolio);
+
+            for (DateTime currentDate = nextDate; currentDate <= maturity; currentDate = currentDate.AddDays(1))
+            {
+                if (!BmfCalendar.IsBusinessDate(currentDate))
+                    continue;
+
+                nextDate = BmfCalendar.PlusBusinessDays(currentDate, 1);
+                timeStep = ((nextDate - currentDate).TotalDays / 365.0);
+                var portfolio = new PortfolioSellSide(currentDate, maturity, strike, previousPortfolio.HedgingNotional, previousPortfolio.Cash, timeStep, hasHedge, true);
+                LogOnConsole(portfolio);
+                previousPortfolio = portfolio;
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Question7()
         {
-            var tradeDate = new DateTime(2015, 06, 30);
-            var maturity = tradeDate.AddMonths(12);
-
-            double forward = FWDS.GetFwd(tradeDate, maturity);
+            DateTime tradeDate = new DateTime(2015, 06, 30);
+            DateTime maturity = tradeDate.AddMonths(12);
             double strike = FWDS.GetFwd(tradeDate, maturity);
-            double timeToMaturity = TAU.Act365(tradeDate, maturity);
-            double interestRate = RATES.GetRate(tradeDate, maturity);
-            double volatility = VOLS.GetVol(tradeDate, maturity);
+            bool hasHedge = true;
 
-            var call = new BlackEuropeanCallOption(tradeDate, maturity, strike);
-            MessageBox.Show(call.Price + "\t" + call.Delta);
+            DateTime nextDate = BmfCalendar.PlusBusinessDays(tradeDate, 1);
+            double timeStep = ((nextDate - tradeDate).TotalDays / 365.0);
 
-            MessageBox.Show("discounted delta: "+ Math.Exp(-interestRate * timeToMaturity) * call.Delta);
+            PortfolioSellSide previousPortfolio = new PortfolioSellSide(tradeDate, maturity, strike, 0.0, 0.0, timeStep, hasHedge, true);
+
+            Console.WriteLine("Reference Date,Portfolio Value,Option Price,Hedging Notional,Cash,PTAX,Forward,Strike");
+            LogOnConsole(previousPortfolio);
+
+            int step = 1;
+            for (DateTime currentDate = nextDate; currentDate <= maturity; currentDate = currentDate.AddDays(1))
+            {
+                if (!BmfCalendar.IsBusinessDate(currentDate))
+                    continue;
+
+                nextDate = BmfCalendar.PlusBusinessDays(currentDate, 1);
+                timeStep = ((nextDate - currentDate).TotalDays / 365.0);
+                hasHedge = (step % 5 == 0);
+                var portfolio = new PortfolioSellSide(currentDate, maturity, strike, previousPortfolio.HedgingNotional, previousPortfolio.Cash, timeStep, hasHedge, true);
+                LogOnConsole(portfolio);
+                previousPortfolio = portfolio;
+                step++;
+            }
+        }
+
+        private void Question3()
+        {
+            DateTime tradeDate = new DateTime(2015, 06, 30);
+            DateTime maturity = tradeDate.AddMonths(12);
+            double strike = FWDS.GetFwd(tradeDate, maturity);
+            bool hasHedge = true;
+
+            DateTime nextDate = BmfCalendar.PlusBusinessDays(tradeDate, 1);
+            double timeStep = ((nextDate - tradeDate).TotalDays / 365.0);
+
+            Portfolio previousPortfolio = new Portfolio(tradeDate, maturity, strike, 0.0, 0.0, timeStep, hasHedge);
+
+            Console.WriteLine("Reference Date,Portfolio Value,Option Price,Hedging Notional,Cash,PTAX,Forward,Strike");
+            LogOnConsole(previousPortfolio);
+
+            for (DateTime currentDate = nextDate; currentDate <= maturity; currentDate = currentDate.AddDays(1))
+            {
+                if (!BmfCalendar.IsBusinessDate(currentDate))
+                    continue;
+
+                nextDate = BmfCalendar.PlusBusinessDays(currentDate, 1);
+                timeStep = ((nextDate - currentDate).TotalDays / 365.0);
+                var portfolio = new Portfolio(currentDate, maturity, strike, previousPortfolio.HedgingNotional, previousPortfolio.Cash, timeStep, hasHedge);
+                LogOnConsole(portfolio);
+                previousPortfolio = portfolio;
+            }
+        }
+
+        private void LogOnConsole(Portfolio portfolio)
+        {
+            var logLine = new StringBuilder();
+
+            logLine.Append(portfolio.CurrentDate.ToString("dd-MMM-yyyy")).Append(",");
+            logLine.Append(portfolio.Value.ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.Option.Price.ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.HedgingNotional.ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.Cash.ToString("0.000000")).Append(",");
+            logLine.Append(PTAX.GetValue(portfolio.CurrentDate).ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.Option.Forward.ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.Option.Strike.ToString("0.000000")).Append(",");
+
+            Console.WriteLine(logLine.ToString());
+        }
+
+        private void LogOnConsole(PortfolioSellSide portfolio)
+        {
+            var logLine = new StringBuilder();
+
+            logLine.Append(portfolio.CurrentDate.ToString("dd-MMM-yyyy")).Append(",");
+            logLine.Append(portfolio.Value.ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.Option.Price.ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.HedgingNotional.ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.Cash.ToString("0.000000")).Append(",");
+            logLine.Append(PTAX.GetValue(portfolio.CurrentDate).ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.Option.Forward.ToString("0.000000")).Append(",");
+            logLine.Append(portfolio.Option.Strike.ToString("0.000000")).Append(",");
+
+            Console.WriteLine(logLine.ToString());
         }
     }
 }

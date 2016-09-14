@@ -652,7 +652,13 @@ namespace PricingAndHedging.FinalExam.DataProviders
             { new DateTime(2016,6,17), new ForwardsForDate(new DateTime(2016,6,17),3.4167,3.4425,3.5106,3.7476)},
             { new DateTime(2016,6,20), new ForwardsForDate(new DateTime(2016,6,20),3.3948,3.4212,3.4793,3.7183)},
             { new DateTime(2016,6,21), new ForwardsForDate(new DateTime(2016,6,21),3.4142,3.4425,3.5011,3.7314)},
-            { new DateTime(2016,6,22), new ForwardsForDate(new DateTime(2016,6,22),3.3775,3.4031,3.4594,3.6928)}
+            { new DateTime(2016,6,22), new ForwardsForDate(new DateTime(2016,6,22),3.3775,3.4031,3.4594,3.6928)},
+            { new DateTime(2016,6,23), new ForwardsForDate(new DateTime(2016,6,23),3.42750599246586,0.0,0.0,0.0)},
+            { new DateTime(2016,6,24), new ForwardsForDate(new DateTime(2016,6,24),3.44115805869857,0.0,0.0,0.0)},
+            { new DateTime(2016,6,27), new ForwardsForDate(new DateTime(2016,6,27),3.42538171990765,0.0,0.0,0.0)},
+            { new DateTime(2016,6,28), new ForwardsForDate(new DateTime(2016,6,28),3.34756936658296,0.0,0.0,0.0)},
+            { new DateTime(2016,6,29), new ForwardsForDate(new DateTime(2016,6,29),3.25365780844538,0.0,0.0,0.0)},
+            { new DateTime(2016,6,30), new ForwardsForDate(new DateTime(2016,6,30),3.2098,0.0,0.0,0.0)}
         };
 
         public static double GetFwd(DateTime from, DateTime to)

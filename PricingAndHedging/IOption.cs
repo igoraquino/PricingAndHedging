@@ -7,5 +7,9 @@ namespace PricingAndHedging.FinalExam
         double Price { get; }
 
         double Delta { get; }
+
+        double Strike { get; }
+
+        double Forward { get; }
     }
 }

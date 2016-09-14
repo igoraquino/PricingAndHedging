@@ -652,7 +652,13 @@ namespace PricingAndHedging.FinalExam.DataProviders
             { new DateTime(2016,6,17), new InterestRatesForDate(new DateTime(2016,6,17),0.1412,0.140894,0.132722)},
             { new DateTime(2016,6,20), new InterestRatesForDate(new DateTime(2016,6,20),0.141202,0.140692,0.132727)},
             { new DateTime(2016,6,21), new InterestRatesForDate(new DateTime(2016,6,21),0.141202,0.140631,0.131668)},
-            { new DateTime(2016,6,22), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)}
+            { new DateTime(2016,6,22), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)},
+            { new DateTime(2016,6,23), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)},
+            { new DateTime(2016,6,24), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)},
+            { new DateTime(2016,6,27), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)},
+            { new DateTime(2016,6,28), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)},
+            { new DateTime(2016,6,29), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)},
+            { new DateTime(2016,6,30), new InterestRatesForDate(new DateTime(2016,6,22),0.141158,0.140626,0.131949)}
         };
 
         public static double GetRate(DateTime from, DateTime to)

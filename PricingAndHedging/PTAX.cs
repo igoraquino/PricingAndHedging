@@ -652,7 +652,13 @@ namespace PricingAndHedging.FinalExam.DataProviders
             { new DateTime(2016,6,17), 3.4372},
             { new DateTime(2016,6,20), 3.3835},
             { new DateTime(2016,6,21), 3.3897},
-            { new DateTime(2016,6,22), 3.3883}
+            { new DateTime(2016,6,22), 3.3883},
+            { new DateTime(2016,6,23), 3.3533},
+            { new DateTime(2016,6,24), 3.3772},
+            { new DateTime(2016,6,27), 3.3934},
+            { new DateTime(2016,6,28), 3.3267},
+            { new DateTime(2016,6,29), 3.2435},
+            { new DateTime(2016,6,30), 3.2098}
         };
 
         public static double GetValue(DateTime date)

@@ -652,7 +652,13 @@ namespace PricingAndHedging.FinalExam.DataProviders
             { new DateTime(2016,6,17), new VolatilitiesForDate(new DateTime(2016,6,17),0.19228,0.18525,0.18555)},
             { new DateTime(2016,6,20), new VolatilitiesForDate(new DateTime(2016,6,20),0.19103,0.18215,0.1834)},
             { new DateTime(2016,6,21), new VolatilitiesForDate(new DateTime(2016,6,21),0.19835,0.1878,0.1856)},
-            { new DateTime(2016,6,22), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)}
+            { new DateTime(2016,6,22), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)},
+            { new DateTime(2016,6,23), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)},
+            { new DateTime(2016,6,24), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)},
+            { new DateTime(2016,6,27), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)},
+            { new DateTime(2016,6,28), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)},
+            { new DateTime(2016,6,29), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)},
+            { new DateTime(2016,6,30), new VolatilitiesForDate(new DateTime(2016,6,22),0.19943,0.1873,0.18545)}
         };
 
         public static double GetVol(DateTime from, DateTime to)

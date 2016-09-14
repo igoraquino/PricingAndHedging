@@ -1,10 +1,10 @@
-using MathNet.Numerics.Distributions;
+﻿using MathNet.Numerics.Distributions;
 using PricingAndHedging.FinalExam.DataProviders;
 using System;
 
 namespace PricingAndHedging.FinalExam
 {
-    public class Portfolio
+    public class PortfolioSellSide
     {
         #region Fields
 
@@ -20,6 +20,7 @@ namespace PricingAndHedging.FinalExam
 
         private double timeToMaturityInYears;
         private bool isEvaluated;
+        private bool hasFwdAdjust;
         private IOption option;
 
         private double portfolioValue;
@@ -30,7 +31,7 @@ namespace PricingAndHedging.FinalExam
 
         #region Constructor
 
-        public Portfolio(DateTime currentDate, DateTime maturity, double strike, double initialHedgingNotional, double initialCash, double timeStepSize, bool hasHedge)
+        public PortfolioSellSide(DateTime currentDate, DateTime maturity, double strike, double initialHedgingNotional, double initialCash, double timeStepSize, bool hasHedge, bool hasFwdAdjust)
         {
             this.currentDate = currentDate;
             this.maturity = maturity;
@@ -39,6 +40,7 @@ namespace PricingAndHedging.FinalExam
             this.initialCash = initialCash;
             this.timeStepSize = timeStepSize;
             this.hasHedge = hasHedge;
+            this.hasFwdAdjust = hasFwdAdjust;
 
             this.interestRateInYears = RATES.GetRate(this.currentDate, this.maturity);
             this.volatility = VOLS.GetVol(this.currentDate, this.maturity);
@@ -56,7 +58,7 @@ namespace PricingAndHedging.FinalExam
 
             this.option = new BlackEuropeanCallOption(this.currentDate, this.maturity, this.strike);
 
-            if (this.hasHedge)
+            if (this.hasFwdAdjust)
             {
                 if (this.currentDate == this.maturity)
                 {
@@ -72,13 +74,13 @@ namespace PricingAndHedging.FinalExam
                 }
                 else
                 {
-                    this.hedgingNotional = option.Delta;
+                    this.hedgingNotional = this.hasHedge ? -option.Delta : this.initialHedgingNotional;
 
                     bool isFirstInteration = ((Math.Abs(this.initialHedgingNotional) < 1e-6) && (Math.Abs(this.initialCash) < 1e-6));
 
                     if (isFirstInteration)
                     {
-                        this.cash = -option.Price;
+                        this.cash = option.Price;
                     }
                     else
                     {
@@ -96,11 +98,13 @@ namespace PricingAndHedging.FinalExam
             }
             else
             {
+                this.hedgingNotional = initialHedgingNotional;
+
                 bool isFirstInteration = ((Math.Abs(this.initialHedgingNotional) < 1e-10) && (Math.Abs(this.initialCash) < 1e-10));
 
                 if (isFirstInteration)
                 {
-                    this.cash = -option.Price;
+                    this.cash = option.Price;
                 }
                 else
                 {
@@ -108,7 +112,7 @@ namespace PricingAndHedging.FinalExam
                 }
             }
 
-            this.portfolioValue = option.Price + this.cash;
+            this.portfolioValue = -option.Price + this.cash;
         }
 
         #endregion
